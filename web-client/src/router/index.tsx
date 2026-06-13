@@ -1,0 +1,14 @@
+import { createBrowserRouter } from 'react-router-dom';
+import App from '@/App';
+import ProtectedRoute from '@/components/layout/ProtectedRoute';
+import HomePage from '@/pages/HomePage';
+import LoginPage from '@/pages/LoginPage';
+import RegisterPage from '@/pages/RegisterPage';
+import EmailVerifyPage from '@/pages/EmailVerifyPage';
+import ListingDetailPage from '@/pages/ListingDetailPage';
+import ProfilePage from '@/pages/ProfilePage';
+import SellerDashboardPage from '@/pages/seller/SellerDashboardPage';
+import ListingEditPage from '@/pages/seller/ListingEditPage';
+import AdminDashboardPage from '@/pages/admin/AdminDashboardPage';
+import SupportDashboardPage from '@/pages/support/SupportDashboardPage';
+export const router = createBrowserRouter([{ path: '/', element: <App />, children: [{ index: true, element: <HomePage /> }, { path: 'login', element: <LoginPage /> }, { path: 'register', element: <RegisterPage /> }, { path: 'verify-email', element: <EmailVerifyPage /> }, { path: 'listings/:id', element: <ListingDetailPage /> }, { path: 'profile/:id', element: <ProfilePage /> }, { path: 'seller/dashboard', element: <ProtectedRoute requiredRoles={['seller']}><SellerDashboardPage /></ProtectedRoute> }, { path: 'seller/listings/:id/edit', element: <ProtectedRoute requiredRoles={['seller']}><ListingEditPage /></ProtectedRoute> }, { path: 'admin/dashboard', element: <ProtectedRoute requiredRoles={['administrator']}><AdminDashboardPage /></ProtectedRoute> }, { path: 'support/dashboard', element: <ProtectedRoute requiredRoles={['support_agent']}><SupportDashboardPage /></ProtectedRoute> }] }]);

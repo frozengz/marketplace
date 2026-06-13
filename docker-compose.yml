@@ -1,0 +1,40 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: marketplace
+      POSTGRES_USER: marketplace_user
+      POSTGRES_PASSWORD: marketplace_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./server/src/db/migrations:/docker-entrypoint-initdb.d
+  server:
+    build:
+      context: ./server
+    environment:
+      DB_CONNECTION_STRING: "host=db port=5432 dbname=marketplace user=marketplace_user password=marketplace_pass"
+      JWT_SECRET: "change_me_in_production"
+      SMTP_HOST: ""
+      SMTP_PORT: "587"
+      SMTP_USER: ""
+      SMTP_PASSWORD: ""
+      BASE_URL: "http://localhost:5173"
+      SERVER_PORT: "8080"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+  client:
+    build:
+      context: ./web-client
+    environment:
+      VITE_API_URL: "http://localhost:8080"
+    ports:
+      - "5173:5173"
+    depends_on:
+      - server
+volumes:
+  pgdata:
