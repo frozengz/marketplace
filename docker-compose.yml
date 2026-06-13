@@ -1,21 +1,20 @@
 version: '3.9'
 services:
-  db:
-    image: postgres:16
+  mongo:
+    image: mongo:7
     environment:
-      POSTGRES_DB: marketplace
-      POSTGRES_USER: marketplace_user
-      POSTGRES_PASSWORD: marketplace_pass
+      MONGO_INITDB_DATABASE: marketplace
     ports:
-      - "5432:5432"
+      - "27017:27017"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - mongodata:/data/db
       - ./server/src/db/migrations:/docker-entrypoint-initdb.d
   server:
     build:
       context: ./server
     environment:
-      DB_CONNECTION_STRING: "host=db port=5432 dbname=marketplace user=marketplace_user password=marketplace_pass"
+      MONGO_URI: "mongodb://mongo:27017"
+      MONGO_DATABASE: "marketplace"
       JWT_SECRET: "change_me_in_production"
       SMTP_HOST: ""
       SMTP_PORT: "587"
@@ -26,7 +25,7 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      - mongo
   client:
     build:
       context: ./web-client
@@ -37,4 +36,4 @@ services:
     depends_on:
       - server
 volumes:
-  pgdata:
+  mongodata:

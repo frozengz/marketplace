@@ -1,5 +1,7 @@
 #pragma once
-#include <pqxx/pqxx>
-#include <memory>
+#include <mongocxx/client.hpp>
+#include <mongocxx/database.hpp>
+#include <mongocxx/instance.hpp>
+#include <mongocxx/uri.hpp>
 #include <string>
-class Database { public: explicit Database(std::string connection_string); pqxx::result execute(const std::string& sql); pqxx::connection& connection(); private: std::unique_ptr<pqxx::connection> connection_; };
+class Database { public: Database(const std::string& uri, const std::string& database_name); mongocxx::database database(); void ensure_indexes(); private: inline static mongocxx::instance instance_{}; mongocxx::client client_; mongocxx::database database_; };
