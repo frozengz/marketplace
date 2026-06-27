@@ -1,0 +1,7 @@
+import { ApiResponse } from '@/types/api';
+const API_URL = import.meta.env.VITE_API_URL as string | undefined;
+const TOKEN_KEY = 'accessToken';
+const REFRESH_PATH = '/api/auth/refresh';
+export async function request<T>(path: string, init: RequestInit = {}, retry = true): Promise<ApiResponse<T>> { const headers = new Headers(init.headers); const token = localStorage.getItem(TOKEN_KEY); if (token !== null) { headers.set('Authorization', `Bearer ${token}`); } if (!(init.body instanceof FormData)) { headers.set('Content-Type', 'application/json'); } const response = await fetch(`${API_URL ?? ''}${path}`, { ...init, headers, credentials: 'include' }); if (response.status === 401 && retry) { const refreshed = await fetch(`${API_URL ?? ''}${REFRESH_PATH}`, { method: 'POST', credentials: 'include' }); if (refreshed.ok) { const json = await refreshed.json() as { access_token: string }; localStorage.setItem(TOKEN_KEY, json.access_token); return request<T>(path, init, false); } } const json = await response.json() as unknown; if (!response.ok) { const body = json as { error: ApiResponse<T>['error'] }; return { data: null, error: body.error }; } return { data: json as T, error: null }; }
+export function setAccessToken(token: string | null): void { if (token === null) { localStorage.removeItem(TOKEN_KEY); } else { localStorage.setItem(TOKEN_KEY, token); } }
+export function getAccessToken(): string | null { return localStorage.getItem(TOKEN_KEY); }

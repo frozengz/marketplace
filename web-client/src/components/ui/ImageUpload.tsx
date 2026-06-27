@@ -1,0 +1,3 @@
+import React, { useState } from 'react';
+interface ImageUploadProps { onFiles: (files: File[]) => void; maxFiles?: number; }
+export default function ImageUpload({ onFiles, maxFiles = 9 }: ImageUploadProps): JSX.Element { const [previews, setPreviews] = useState<string[]>([]); function handleChange(event: React.ChangeEvent<HTMLInputElement>): void { const files = Array.from(event.target.files ?? []).slice(0, maxFiles); setPreviews(files.map((file) => URL.createObjectURL(file))); onFiles(files); } return <div><input type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={handleChange} /><div>{previews.map((preview) => <img key={preview} src={preview} alt="preview" width="96" />)}</div></div>; }
