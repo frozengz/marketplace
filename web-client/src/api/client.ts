@@ -1,4 +1,4 @@
-import { ApiResponse } from '@/types/api';
+import { ApiResponse } from '../types/api';
 const API_URL = import.meta.env.VITE_API_URL as string | undefined;
 const TOKEN_KEY = 'accessToken';
 const REFRESH_PATH = '/api/auth/refresh';
