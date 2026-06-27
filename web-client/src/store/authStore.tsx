@@ -1,6 +1,6 @@
 import React, { createContext, useMemo, useReducer } from 'react';
-import { User } from '@/types/user';
-import { setAccessToken } from '@/api/client';
+import { User } from '../types/user';
+import { setAccessToken } from '../api/client';
 interface AuthState { user: User | null; accessToken: string | null; isLoading: boolean; }
 type AuthAction = { type: 'login'; user: User | null; accessToken: string } | { type: 'logout' } | { type: 'setUser'; user: User | null } | { type: 'loading'; isLoading: boolean };
 interface AuthContextValue extends AuthState { login: (user: User | null, accessToken: string) => void; logout: () => void; setUser: (user: User | null) => void; refreshToken: () => Promise<void>; }
